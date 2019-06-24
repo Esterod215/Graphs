@@ -10,6 +10,7 @@ class Graph:
     def add_vertex(self, vertex):
         """
         Add a vertex to the graph.
+        
         """
         pass  # TODO
     def add_edge(self, v1, v2):
