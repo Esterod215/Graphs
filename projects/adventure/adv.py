@@ -76,6 +76,21 @@ def BFS(graph, starting_room):
                 q.enqueue(path_copy)
 
 
+#  500 total rooms
+while len(graph) < len(roomGraph):
+    currentRoomID = player.currentRoom.id
+    #not in graph
+    if currentRoomID not in graph:
+        # Put the room into our graph with no exits yet
+        graph[currentRoomID] = {}
+        
+        for exit in player.currentRoom.getExits():
+            # Set all exit values to '?' 
+            graph[currentRoomID][exit] = "?"
+    
+    
+
+
 
 
 
