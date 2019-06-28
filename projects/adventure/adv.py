@@ -131,6 +131,7 @@ while len(graph) < len(roomGraph):
 
 
 # TRAVERSAL TEST
+
 visited_rooms = set()
 player.currentRoom = world.startingRoom
 visited_rooms.add(player.currentRoom)
