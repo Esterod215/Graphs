@@ -3,6 +3,19 @@ from player import Player
 from world import World
 
 import random
+#copied this code from lecture to use for BFS
+class Queue():
+    def __init__(self):
+        self.queue = []
+    def enqueue(self, value):
+        self.queue.append(value)
+    def dequeue(self):
+        if self.size() > 0:
+            return self.queue.pop(0)
+        else:
+            return None
+    def size(self):
+        return len(self.queue)
 
 # Load world
 world = World()
@@ -24,6 +37,22 @@ player = Player("Name", world.startingRoom)
 
 # Fill this out
 traversalPath = []
+
+graph = {}
+
+#after you hit a dead end this will help you go the opposite direction
+def reverse(direction):
+    if direction == "n":
+        return "s"
+    elif direction == "s":
+        return "n"
+    elif direction == "w":
+        return "e"
+    elif direction == "e":
+        return "w"
+
+
+
 
 
 
