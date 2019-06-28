@@ -52,16 +52,14 @@ def reverse(direction):
         return "w"
 
 #takes in the graph and starting point
-def bft(graph, starting_room):
+def BFS(graph, starting_room):
     q = Queue()
-    # Create an empty Visited dict
-    visited = set()  # Note that this is a dictionary, not a set
-    # Add A PATH TO the starting vertex to the queue
+    visited = set()  
+    # Added this from Brady's tip
     pathToTraverse = []
     q.enqueue([starting_room])
     # While the queue is not empty...
     while q.size() > 0:
-        # Dequeue the first PATH
         path = q.dequeue()
         # Grab the last vertex of the path
         current_room = path[-1]
@@ -77,9 +75,6 @@ def bft(graph, starting_room):
                 path_copy.append(next_room)
                 q.enqueue(path_copy)
 
-# room.name = 'Room 1'
-# room.id = 1 -> from printing stuff earlier
-# room.description = (x, y)
 
 
 
