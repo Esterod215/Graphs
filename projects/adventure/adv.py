@@ -84,11 +84,42 @@ while len(graph) < len(roomGraph):
         # Put the room into our graph with no exits yet
         graph[currentRoomID] = {}
         
-        for exit in player.currentRoom.getExits():
+        for end in player.currentRoom.getExits():
             # Set all exit values to '?' 
-            graph[currentRoomID][exit] = "?"
+            graph[currentRoomID][end] = "?"
     
+    for path in graph[currentRoomID]:
+        if path not in graph[currentRoomID]:
+            break
+        
+        if graph[currentRoomID][path] == "?":
+            exit_path = path
+           
+            if exit_path is not None:
+                traversalPath.append(exit_path)
+                player.travel(exit_path)
+                new_roomID = player.currentRoom.id
+               
+                if new_roomID not in graph:
+                    graph[new_roomID] = {}
+                    
+                    for exit in player.currentRoom.getExits():
+                        graph[player.currentRoom.id][exit] = "?"
+            
+            graph[currentRoomID][exit_path] = new_roomID
+            graph[new_roomID][reverse(exit_path)] = currentRoomID
+            currentRoomID = new_roomID
+    # Dead end reached
+    paths = BFS(graph, currentRoomID)
     
+    if paths is not None:
+        for room_number in paths:
+            
+            for room in graph[currentRoomID]:
+                if graph[currentRoomID][room] == room_number:
+                    traversalPath.append(room)
+                    player.travel(room)
+    currentRoomID = player.currentRoom.id
 
 
 
