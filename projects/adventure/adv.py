@@ -3,9 +3,23 @@ from player import Player
 from world import World
 
 import random
+#copied this code from lecture to use for BFS
+class Queue():
+    def __init__(self):
+        self.queue = []
+    def enqueue(self, value):
+        self.queue.append(value)
+    def dequeue(self):
+        if self.size() > 0:
+            return self.queue.pop(0)
+        else:
+            return None
+    def size(self):
+        return len(self.queue)
 
 # Load world
 world = World()
+
 
 # You may uncomment the smaller graphs for development and testing purposes.
 # roomGraph={0: [(3, 5), {'n': 1}], 1: [(3, 6), {'s': 0, 'n': 2}], 2: [(3, 7), {'s': 1}]}
@@ -24,9 +38,100 @@ player = Player("Name", world.startingRoom)
 # Fill this out
 traversalPath = []
 
+graph = {}
+
+#after you hit a dead end this will help you go the opposite direction
+def reverse(direction):
+    if direction == "n":
+        return "s"
+    elif direction == "s":
+        return "n"
+    elif direction == "w":
+        return "e"
+    elif direction == "e":
+        return "w"
+
+#takes in the graph and starting point
+def BFS(graph, starting_room):
+    q = Queue()
+    visited = set()  
+    # Added this from Brady's tip
+    pathToTraverse = []
+    q.enqueue([starting_room])
+    # While the queue is not empty...
+    while q.size() > 0:
+        path = q.dequeue()
+        # Grab the last vertex of the path
+        current_room = path[-1]
+        if current_room not in visited:
+            visited.add(current_room)
+            for room in graph[current_room]:
+                if graph[current_room][room] == "?":
+                    return path
+            for room_exit in graph[current_room]:
+                pathToTraverse.append(room_exit)
+                next_room = graph[current_room][room_exit]
+                path_copy = path.copy()
+                path_copy.append(next_room)
+                q.enqueue(path_copy)
+
+
+#  500 total rooms
+while len(graph) < len(roomGraph):
+    currentRoomID = player.currentRoom.id
+    #not in graph
+    if currentRoomID not in graph:
+        # Put the room into our graph with no exits yet
+        graph[currentRoomID] = {}
+        
+        for end in player.currentRoom.getExits():
+            # Set all exit values to '?' 
+            graph[currentRoomID][end] = "?"
+    
+    for path in graph[currentRoomID]:
+        if path not in graph[currentRoomID]:
+            break
+        
+        if graph[currentRoomID][path] == "?":
+            exit_path = path
+           
+            if exit_path is not None:
+                traversalPath.append(exit_path)
+                player.travel(exit_path)
+                new_roomID = player.currentRoom.id
+               
+                if new_roomID not in graph:
+                    graph[new_roomID] = {}
+                    
+                    for exit in player.currentRoom.getExits():
+                        graph[player.currentRoom.id][exit] = "?"
+            
+            graph[currentRoomID][exit_path] = new_roomID
+            graph[new_roomID][reverse(exit_path)] = currentRoomID
+            currentRoomID = new_roomID
+    # Dead end reached
+    paths = BFS(graph, currentRoomID)
+    
+    if paths is not None:
+        for room_number in paths:
+            
+            for room in graph[currentRoomID]:
+                if graph[currentRoomID][room] == room_number:
+                    traversalPath.append(room)
+                    player.travel(room)
+    currentRoomID = player.currentRoom.id
+
+
+
+
+
+
+
+
 
 
 # TRAVERSAL TEST
+
 visited_rooms = set()
 player.currentRoom = world.startingRoom
 visited_rooms.add(player.currentRoom)
